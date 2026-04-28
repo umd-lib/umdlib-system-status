@@ -1,0 +1,28 @@
+<?php
+/**
+ * @file
+ * Module file for the umdlib_system_status module
+ */
+
+/**
+ * @param $variables
+ */
+function umdlib_system_status_preprocess_page(&$variables)
+{
+  $umdlib_system_status_url = Drupal\Core\Url::fromRoute('umdlib_system_status.status_json')->toString();
+  // pass variable to Drupal.Settings
+  $variables['#attached']['drupalSettings']['umdlib_system_status']['umdlib_system_status_url'] = $umdlib_system_status_url;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function umdlib_system_status_theme() {
+  return [
+    'umdlib_system_status' => [
+      'variables' => [
+        'content' => '',
+      ],
+    ],
+  ];
+}
