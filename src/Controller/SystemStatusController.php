@@ -1,10 +1,10 @@
 <?php
 /**
  * @file
- * Definition of Drupal\system_status\Controller\SystemStatusController
+ * Definition of Drupal\umdlib_system_status\Controller\SystemStatusController
  */
 
- namespace Drupal\system_status\Controller;
+ namespace Drupal\umdlib_system_status\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;

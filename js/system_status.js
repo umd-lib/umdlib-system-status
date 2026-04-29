@@ -1,11 +1,11 @@
-(function ($, Drupal, drupalSettings, once) {
+(function (Drupal, drupalSettings) {
   'use strict';
 
   Drupal.behaviors.systemStatusBehavior = {
     attach: function (context, settings) {
 
       var systemStatusUrl = drupalSettings.system_status.system_status_url;
-      var utilityNavItem = $(context).find('.utility-nav-systems-status');
+      var utilityNavItem = context.querySelector('.utility-nav-systems-status');
 
       /**
        * Retrieves the systems status from the given endpoint, and updates
@@ -13,64 +13,62 @@
        * system status block.
        */
       function retrieveStatus(systemStatusUrl) {
-        var utilityNavItemStatus = $(context).find('.utility-nav-systems-status > .status');
-        var systemStatusDate = $(context).find('.systems-status-date');
-        var systemStatusOperational = $(context).find('.systems-status-operational > .status');
-        var systemStatusProblem = $(context).find('.systems-status-maintenance > .status');
+        var utilityNavItemStatus = context.querySelector('.utility-nav-systems-status > .status');
+        var systemStatusDate = context.querySelector('.systems-status-date');
+        var systemStatusOperational = context.querySelector('.systems-status-operational > .status');
+        var systemStatusProblem = context.querySelector('.systems-status-maintenance > .status');
 
-        if (utilityNavItem === undefined || utilityNavItem[0] === undefined) {
+        if (!utilityNavItem) {
           // Status menu item not on page
           return;
         }
 
-        systemStatusDate.html(getFormattedDate());
+        systemStatusDate.innerHTML = getFormattedDate();
 
-        $.getJSON(systemStatusUrl, function (data) {
-          if (data === undefined) {
-            return;
-          }
-          if (data['error']) {
-            console.log('Error retrieving system status!')
-            return;
-          }
+        fetch(systemStatusUrl)
+          .then(response => response.json())
+          .then(data => {
+            if (!data) {
+              return;
+            }
+            if (data['error']) {
+              console.log('Error retrieving system status!')
+              return;
+            }
 
-          var nonNormalCount = data['non_normal']
-          $("#systems-status-spinner").hide();
-          $("#systems-status-content").show();
-          $("#systems-status-spinner-mobile").hide();
-          $("#systems-status-content-mobile").show();
-          
-          if (nonNormalCount > 0) {
-            var nonNormalCaption = '<span class="badge">' + nonNormalCount + '</span>';
-            utilityNavItemStatus.html(nonNormalCaption);
-            $("#system-no-issues").hide();
-            $("#system-issues").show();
-            $("#system-no-issues-mobile").hide();
-            $("#system-issues-mobile").show();
-          } else {
-            $("#system-issues").hide();
-            $("#system-no-issues").show();
-            $("#system-issues-mobile").hide();
-            $("#system-no-issues-mobile").show();
-          }
-          var problemHtml = "<ol>"
-          data['non_normal_list'].forEach(element => problemHtml += `<li>${element}</li>`);
-          problemHtml += "</ol>"
-          systemStatusProblem.html(problemHtml);
-        });
+            var nonNormalCount = data['non_normal'];
+            document.getElementById('systems-status-spinner').style.display = 'none';
+            document.getElementById('systems-status-content').style.display = '';
+            document.getElementById('systems-status-spinner-mobile').style.display = 'none';
+            document.getElementById('systems-status-content-mobile').style.display = '';
+            
+            if (nonNormalCount > 0) {
+              var nonNormalCaption = '<span class="badge">' + nonNormalCount + '</span>';
+              utilityNavItemStatus.innerHTML = nonNormalCaption;
+              document.getElementById('system-no-issues').style.display = 'none';
+              document.getElementById('system-issues').style.display = '';
+              document.getElementById('system-no-issues-mobile').style.display = 'none';
+              document.getElementById('system-issues-mobile').style.display = '';
+            } else {
+              document.getElementById('system-issues').style.display = 'none';
+              document.getElementById('system-no-issues').style.display = '';
+              document.getElementById('system-issues-mobile').style.display = 'none';
+              document.getElementById('system-no-issues-mobile').style.display = '';
+            }
+            var problemHtml = "<ol>"
+            data['non_normal_list'].forEach(element => problemHtml += `<li>${element}</li>`);
+            problemHtml += "</ol>"
+            systemStatusProblem.innerHTML = problemHtml;
+          })
+          .catch(error => console.error('Error fetching system status:', error));
       }
 
-      // $('body').once('systemStatusBehavior').each(function () {
-      //   retrieveStatus(systemStatusUrl);
-      // });
-
-      // $(context).find("#showSystem").once('systemStatusBehavior').each(function() {
-      //   retrieveStatus(systemStatusUrl);
-      // });
-
-      once('systemStatusBehavior', '#showSystem', context).forEach(function() {
+      // Simple once() implementation using data attribute
+      var showSystemElement = context.querySelector('#showSystem');
+      if (showSystemElement && !showSystemElement.dataset.systemStatusBehavior) {
+        showSystemElement.dataset.systemStatusBehavior = 'processed';
         retrieveStatus(systemStatusUrl);
-      });
+      }
 
       function getFormattedDate(date) {
         if (date == undefined) {
@@ -84,5 +82,5 @@
       }
     }
   };
-})(jQuery, Drupal, drupalSettings, once);
+})(Drupal, drupalSettings);
 

@@ -6,6 +6,4 @@ system_status-global:
     theme:
       css/system_status.css: {}
   dependencies:
-    - core/jquery
-    - core/drupal
-    - core/once
+  - core/drupal
