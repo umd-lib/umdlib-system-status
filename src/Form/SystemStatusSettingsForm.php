@@ -1,5 +1,5 @@
 <?php
-namespace Drupal\system_status\Form;
+namespace Drupal\umdlib_system_status\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
