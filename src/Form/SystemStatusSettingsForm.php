@@ -51,7 +51,7 @@ class SystemStatusSettingsForm extends ConfigFormBase {
       '#title' => t('Service URL'),
       '#default_value' => $config->get(static::SERVICE_URL_FIELD),
       '#size' => 50,
-      '#maxlength' => 50,
+      '#maxlength' => 150,
       '#required' => TRUE,
     ];
 
@@ -62,6 +62,14 @@ class SystemStatusSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
+    $url = $form_state->getValue(static::SERVICE_URL_FIELD);
+    if (!empty($url)) {
+      // Validate that the URL uses HTTP or HTTPS
+      if (!preg_match('~^https?://~', $url)) {
+        $form_state->setErrorByName(static::SERVICE_URL_FIELD, 
+          $this->t('Service URL must start with http:// or https://'));
+      }
+    }
   }
 
   /**

@@ -11,16 +11,16 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Cache\CacheableJsonResponse;
 use Drupal\Core\Cache\CacheableMetadata;
-use Drupal\system_status\Form\SystemStatusSettingsForm;
+use Drupal\umdlib_system_status\Form\SystemStatusSettingsForm;
  /**
   * Implementation of SystemStatusController
   */
-  class SystemStatusController {
+  class SystemStatusController extends ControllerBase {
 
     protected $config;
   
     public function __construct() {
-      $this->config = \Drupal::config('system_status.settings');
+      $this->config = \Drupal::config(SystemStatusSettingsForm::SETTINGS);
     }
 
     public function getJson(Request $request) {
@@ -31,27 +31,37 @@ use Drupal\system_status\Form\SystemStatusSettingsForm;
       }
       // Get the status
       $curl = curl_init();
-      curl_setopt($curl, CURLOPT_URL, $status_url);
-      curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-      $output = curl_exec($curl);
+      try {
+        curl_setopt($curl, CURLOPT_URL, $status_url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 5);
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, false);
+        $output = curl_exec($curl);
 
-      if (curl_errno($curl)) {
-        return $this->errorResponse("The curl request to $status_url failed with code: "
-          . curl_errno($curl));
-      } elseif (curl_getinfo($curl, CURLINFO_HTTP_CODE) != 200) {
-        return $this->errorResponse("The upstream request $status_url failed with HTTP status code: "
-          . curl_getinfo($curl, CURLINFO_HTTP_CODE));
-      } else {
-        $data = json_decode($output, true);
-        $data['#cache'] = [
-          'max-age' => 0, 
-          'contexts' => [
-            'url',
-          ],
-        ];
-        $response = new CacheableJsonResponse($data);
-        $response->addCacheableDependency(CacheableMetadata::createFromRenderArray($data));
-        return $response;
+        if (curl_errno($curl)) {
+          return $this->errorResponse("The curl request to $status_url failed with code: "
+            . curl_errno($curl));
+        } elseif (curl_getinfo($curl, CURLINFO_HTTP_CODE) != 200) {
+          return $this->errorResponse("The upstream request $status_url failed with HTTP status code: "
+            . curl_getinfo($curl, CURLINFO_HTTP_CODE));
+        } else {
+          $data = json_decode($output, true);
+          if ($data === null) {
+            return $this->errorResponse("The response from $status_url is not a valid JSON string.");
+          }
+          $data['#cache'] = [
+            'max-age' => 0, 
+            'contexts' => [
+              'url',
+            ],
+          ];
+          $response = new CacheableJsonResponse($data);
+          $response->addCacheableDependency(CacheableMetadata::createFromRenderArray($data));
+          return $response;
+        }
+      } finally {
+        curl_close($curl);
       }
     }
 

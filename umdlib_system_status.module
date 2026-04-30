@@ -5,13 +5,16 @@
  */
 
 /**
- * @param $variables
+ * Implements hook_preprocess_page().
+ *
+ * @param array &$variables
+ *   The variables array to preprocess.
  */
-function umdlib_system_status_preprocess_page(&$variables)
+function umdlib_system_status_preprocess_page(array &$variables): void
 {
   $umdlib_system_status_url = Drupal\Core\Url::fromRoute('umdlib_system_status.status_json')->toString();
   // pass variable to Drupal.Settings
-  $variables['#attached']['drupalSettings']['umdlib_system_status']['umdlib_system_status_url'] = $umdlib_system_status_url;
+  $variables['#attached']['drupalSettings']['system_status']['system_status_url'] = $umdlib_system_status_url;
 }
 
 /**

@@ -2,7 +2,7 @@ umdlib_system_status.status_json:
   path: '/umdlib_system_status.json'
   defaults:
     _controller: '\Drupal\umdlib_system_status\Controller\SystemStatusController::getJson'
-    _title: 'Example Page'
+    _title: 'System Status JSON'
   methods: [GET]
   requirements:
     _permission: 'access content'

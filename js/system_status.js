@@ -20,6 +20,11 @@
               return;
             }
 
+            if (typeof data['non_normal'] === 'undefined' || typeof data['non_normal_list'] === 'undefined') {
+              console.error('Invalid system status response structure: missing non_normal or non_normal_list');
+              return;
+            }
+
             const nonNormalCount = data['non_normal'];
 
             // Get or create parent list
