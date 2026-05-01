@@ -1,4 +1,4 @@
-name: UMDLib System Status
+name: UMD Libraries System Status
 description: Provides a cached system status json endpoint that pulls data from external system status json service.
 
 package: 'UMD Services'
@@ -6,3 +6,6 @@ configure: umdlib_system_status.admin_settings_form
 type: module
 
 core_version_requirement: ^11
+
+dependencies:
+  - umdlib_umdds

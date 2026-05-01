@@ -6,7 +6,7 @@
       var systemStatusUrl = drupalSettings.system_status.system_status_url;
 
       function retrieveStatus(systemStatusUrl) {
-        const statusContainer = context.querySelector('.navigation__utility_system-status-item');
+        const statusContainer = context.querySelector('#showSystem .navigation__utility_system-status-item');
 
         if (!statusContainer) {
           return;
@@ -27,11 +27,43 @@
 
             const nonNormalCount = data['non_normal'];
 
-            // Get or create parent list
-            const parentList = statusContainer.parentElement;
+            // Target the showSystem container directly
+            const statusList = context.querySelector('#showSystem');
+
+            console.log('Status list element:', statusList);
+
+            // Update badge with count and appropriate status class
+            const badge = context.querySelector('.badge');
+            if (badge) {
+              badge.textContent = nonNormalCount;
+              badge.classList.remove('badge--error', 'badge--ok');
+              badge.classList.add(nonNormalCount > 0 ? 'badge--error' : 'badge--ok');
+            }
+
+            // Format and update current date and time
+            const now = new Date();
+            const formattedDateTime = now.toLocaleDateString('en-US', {
+              month: 'long',
+              day: 'numeric',
+              year: 'numeric'
+            }) + ' at ' + now.toLocaleTimeString('en-US', {
+              hour: 'numeric',
+              minute: '2-digit',
+              hour12: true
+            });
+
+            const dateTimeDiv = context.querySelector('#systemStatusDateTime');
+            if (dateTimeDiv) {
+              dateTimeDiv.textContent = formattedDateTime;
+            }
+
+            const statusSection = context.querySelector('#systemStatus');
+            if (statusSection) {
+              statusSection.setAttribute('aria-label', formattedDateTime);
+            }
 
             // Remove existing error items (all but the first operational item)
-            const existingErrors = parentList.querySelectorAll('li.navigation__utility_system-status-item:not(:first-child)');
+            const existingErrors = statusList.querySelectorAll('li.navigation__utility_system-status-item:not(:first-child)');
             existingErrors.forEach(item => item.remove());
 
             if (nonNormalCount > 0) {
@@ -53,7 +85,7 @@
                     ${service}
                   </div>
                 </li>`;
-                parentList.appendChild(errorItem);
+                statusList.appendChild(errorItem);
               });
             } else {
               // Show operational message, remove any error items

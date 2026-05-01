@@ -9,23 +9,26 @@
 #}
 {{ attach_library('umdlib_system_status/system_status-global') }}
 
-<ul id="showSystem">
-  {# All systems are operational (initially shown, hidden if there are errors) #}
-  <li class="navigation__utility_system-status-item s-stack-small">
-    <div class="navigation__utility_system-status-item-status t-body-small">
-      <span class="navigation__utility_system-status-item-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" viewBox="0 0 19 18" fill="none">
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M7.65 12.59L18.51 0L18.92 5.21C14.7453 10.0994 12.4047 12.8406 8.23 17.73L7.99 17.53L7.87 17.67L0 11.25L4.8 10.26L7.65 12.58V12.59Z" fill="#037623"/>
-        </svg>
-      </span>
-      All Systems are Operational
-    </div>
-  </li>
-  {# Error items are dynamically added here by system_status.js #}
-</ul>
-
-{% if content %}
-  <div class="system-status-additional-content">
-    {{ content }}
+<section class="c-bg-secondary s-box-medium-v s-box-medium-h" id="systemStatus">
+  <div class="t-title-small s-stack-medium" id="systemStatusDateTime"></div>
+    <ul id="showSystem" class="navigation__utility_system-status-list">
+      {# All systems are operational (initially shown, hidden if there are errors) #}
+      <li class="navigation__utility_system-status-item s-stack-small">
+        <div class="navigation__utility_system-status-item-status t-body-small">
+          <span class="navigation__utility_system-status-item-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" viewBox="0 0 19 18" fill="none">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M7.65 12.59L18.51 0L18.92 5.21C14.7453 10.0994 12.4047 12.8406 8.23 17.73L7.99 17.53L7.87 17.67L0 11.25L4.8 10.26L7.65 12.58V12.59Z" fill="#037623"/>
+            </svg>
+          </span>
+          All Systems are Operational
+        </div>
+      </li>
+      {# Error items are dynamically added here by system_status.js #}
+    </ul>
+    {% if content %}
+      <div class="system-status-additional-content">
+        {{ content }}
+      </div>
+    {% endif %}
   </div>
-{% endif %}
+</section>
