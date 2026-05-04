@@ -9,9 +9,7 @@ use Drupal\Core\Form\FormStateInterface;
  */
 class SystemStatusSettingsForm extends ConfigFormBase {
 
-  const SETTINGS = 'system_status.settings';
-
-
+  const SETTINGS = 'umdlib_system_status.settings';
 
   const SERVICE_URL_FIELD = 'service_url';
 

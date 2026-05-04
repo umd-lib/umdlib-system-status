@@ -15,14 +15,14 @@ in the "Drupal Configuration" page > "SYSTEM" section > "System Status"
 command:
 
 ```
-> drush config:set --yes system_status.settings service_url '<URL>'
+> drush config:set --yes umdlib_system_status.settings service_url '<URL>'
 ```
 
 where \<URL> is the URL of the API endpoint. For example, if the URL is
 "http://docker.for.mac.localhost:4567/status", the command would be:
 
 ```
-> drush config:set --yes system_status.settings service_url 'http://docker.for.mac.localhost:4567/status'
+> drush config:set --yes umdlib_system_status.settings service_url 'http://docker.for.mac.localhost:4567/status'
 ```
 
 ## JavaScript
