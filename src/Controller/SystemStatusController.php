@@ -24,6 +24,13 @@ use Drupal\umdlib_system_status\Form\SystemStatusSettingsForm;
     }
 
     public function getJson(Request $request) {
+      // Check for cached response
+      $cache_id = 'umdlib_system_status:json';
+      $cache = \Drupal::cache()->get($cache_id);
+      if ($cache) {
+        return $cache->data;
+      }
+
       // Get the upstream status url
       $status_url = $this->getSystemStatusUrl();
       if ($status_url == null || $status_url == '') {
@@ -51,13 +58,17 @@ use Drupal\umdlib_system_status\Form\SystemStatusSettingsForm;
             return $this->errorResponse("The response from $status_url is not a valid JSON string.");
           }
           $data['#cache'] = [
-            'max-age' => 0, 
+            'max-age' => 300, 
             'contexts' => [
               'url',
             ],
           ];
           $response = new CacheableJsonResponse($data);
           $response->addCacheableDependency(CacheableMetadata::createFromRenderArray($data));
+          
+          // Cache the response for 5 minutes (300 seconds)
+          \Drupal::cache()->set($cache_id, $response, time() + 300);
+          
           return $response;
         }
       } finally {
