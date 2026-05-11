@@ -3,6 +3,12 @@
 This module provides a cached system status json endpoint that pulls data from
 external system status json service.
 
+## To Install
+
+```bash
+composer require umd-lib/umdlib_system_status
+```
+
 ## Setup
 
 Enable the "System Status" module in "Manage | Extend"
