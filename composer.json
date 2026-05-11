@@ -8,8 +8,5 @@
             "name": "UMD Libraries"
         }
     ],
-    "require": {
-        "umd-lib/umdlib-design-system-theme": "^3.0"
-      },
     "minimum-stability": "beta"
 }

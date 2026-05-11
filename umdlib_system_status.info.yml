@@ -7,5 +7,3 @@ type: module
 
 core_version_requirement: ^11
 
-dependencies:
-  - umdlib-design-system-theme
